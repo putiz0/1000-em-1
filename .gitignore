@@ -1,0 +1,30 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+
+# Kotlin
+*.hprof
+
+# Ferramentas locais instaladas por script (JDK/SDK ficam em C:\Users\mikay\playbox-dev)
+.toolchain/
+/.tmp/
+# Artefatos de distribuicao (regeneraveis por tools\make-pack.ps1 e build.ps1;
+# o canal de distribuicao oficial dos packs e o GitHub Releases)
+/dist/

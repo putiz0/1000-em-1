@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Política de rede (Fase 3):
+  o tráfego de download de packs é HTTPS em produção (GitHub Releases).
+  Durante o desenvolvimento usamos o servidor do PC via USB (`adb reverse`),
+  que em HTTP puro responde em localhost / 127.0.0.1 / 10.0.2.2 (emulador).
+  NADA do resto do app fala com a rede.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

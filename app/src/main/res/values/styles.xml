@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema hospedeiro antes do primeiro frame Compose (claro) -->
+    <style name="Theme.PlayBox" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="Theme.PlayBox.NoActionBar" parent="Theme.PlayBox" />
+</resources>

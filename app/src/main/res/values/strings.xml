@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PlayBox Offline</string>
+
+    <!-- Navegação inferior -->
+    <string name="nav_home">Início</string>
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_downloads">Downloads</string>
+    <string name="nav_settings">Ajustes</string>
+
+    <!-- Busca -->
+    <string name="search_placeholder">Buscar jogos…</string>
+    <string name="search_hint_chip_all">Todos</string>
+    <string name="search_hint_chip_available">Disponíveis</string>
+    <string name="search_hint_chip_installed">Instalados</string>
+    <string name="search_empty_title">Nenhum resultado</string>
+    <string name="search_empty_subtitle">Tente outro nome de jogo ou limpe os filtros.</string>
+    <string name="search_clear">Limpar busca</string>
+
+    <!-- Seções da Home -->
+    <string name="section_categories">Categorias</string>
+    <string name="section_popular">Populares</string>
+    <string name="section_installed">Instalados</string>
+    <string name="section_recent">Recentemente adicionados</string>
+    <string name="section_downloads_in_progress">Downloads em andamento</string>
+    <string name="section_continue">Continuar jogando</string>
+    <string name="home_shortcut_library_title">Biblioteca offline</string>
+    <string name="home_shortcut_library_subtitle">Todos os seus jogos baixados, sem internet</string>
+    <string name="home_categories_count">%1$d jogos</string>
+    <string name="home_categories_upcoming">Em breve</string>
+    <string name="home_no_network_needed">Jogue offline depois de baixar — sem endereço de servidores.</string>
+
+    <!-- Estados dos jogos -->
+    <string name="status_null_available">Disponível para baixar</string>
+    <string name="status_queued">Aguardando download</string>
+    <string name="status_downloading">Baixando</string>
+    <string name="status_paused">Pausado</string>
+    <string name="status_completed">Instalado</string>
+    <string name="status_update_available">Atualização disponível</string>
+    <string name="status_failed">Erro no download</string>
+    <string name="status_corrupted">Arquivo corrompido</string>
+    <string name="status_removed">Removido</string>
+    <string name="status_upcoming">Em breve</string>
+
+    <!-- Tela de detalhes -->
+    <string name="detail_back">Voltar</string>
+    <string name="detail_action_download">Baixar</string>
+    <string name="detail_action_download_size">Baixar (%1$s)</string>
+    <string name="detail_action_play">Jogar</string>
+    <string name="detail_action_remove">Remover</string>
+    <string name="detail_action_how_to">Como jogar</string>
+    <string name="detail_action_pause">Pausar</string>
+    <string name="detail_action_resume">Retomar</string>
+    <string name="detail_action_cancel">Cancelar</string>
+    <string name="detail_action_retry">Tentar de novo</string>
+    <string name="detail_action_update">Atualizar</string>
+    <string name="detail_action_redownload">Baixar de novo</string>
+    <string name="detail_action_retry_update">Tentar de novo</string>
+    <string name="detail_note_not_ready">O download deste jogo abre quando o desenvolvimento dele terminar e for publicado no catálogo.</string>
+    <string name="detail_note_update_available">Você pode jogar com a versão instalada ou atualizar o pacote.</string>
+    <string name="detail_note_rules">O texto “Como jogar” acompanha o pacote instalado do jogo.</string>
+    <string name="detail_size_label">Tamanho do download: %1$s</string>
+    <string name="detail_progress_label">Progresso: %1$d%%</string>
+    <string name="detail_bytes_progress">%1$s de %2$s</string>
+    <string name="detail_confirm_remove_title">Remover jogo?</string>
+    <string name="detail_confirm_remove_text">Os dados do jogo serão apagados do aparelho e o espaço será liberado. Você pode baixar de novo quando quiser.</string>
+    <string name="detail_confirm_remove_cta">Remover</string>
+    <string name="detail_confirm_keep">Manter</string>
+
+    <!-- Biblioteca -->
+    <string name="library_title">Biblioteca offline</string>
+    <string name="library_empty_title">Nenhum jogo instalado</string>
+    <string name="library_empty_subtitle">Explore o catálogo e baixe apenas os jogos que deseja jogar. Cada jogo fica disponível mesmo sem internet.</string>
+    <string name="library_open_catalog">Abrir catálogo</string>
+    <string name="library_storage_used">Espaço ocupado por jogos baixados: %1$s</string>
+    <string name="category_empty_title">Categoria sem jogos no momento</string>
+    <string name="category_empty_subtitle">Novos jogos entrarão nesta categoria conforme forem publicados no catálogo.</string>
+    <string name="category_all_upcoming">Nenhum jogo desta categoria está disponível ainda. Todos aparecem como “Em breve”.</string>
+    <string name="detail_not_found_title">Jogo não encontrado</string>
+    <string name="detail_not_found_subtitle">O item não existe mais no catálogo ou o aparelho não conseguiu carregar os dados.</string>
+
+    <!-- Downloads -->
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_empty_title">Nenhum download em andamento</string>
+    <string name="downloads_empty_subtitle">Baixe jogos individuais pelo catálogo. Aqui você acompanha o progresso, cancela e retoma downloads.</string>
+    <string name="downloads_storage_total">Armazenamento total dos módulos: %1$s</string>
+    <string name="downloads_action_pause">Pausar</string>
+    <string name="downloads_action_resume">Retomar</string>
+    <string name="downloads_action_cancel">Cancelar</string>
+    <string name="downloads_action_retry">Tentar de novo</string>
+    <string name="downloads_action_redownload">Baixar de novo</string>
+    <string name="downloads_action_remove">Remover da lista</string>
+
+    <!-- Ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_theme_section">Tema</string>
+    <string name="settings_theme_system">Usar tema do sistema</string>
+    <string name="settings_theme_light">Tema claro</string>
+    <string name="settings_theme_dark">Tema escuro</string>
+    <string name="settings_storage_section">Armazenamento</string>
+    <string name="settings_server_section">Servidor dos jogos</string>
+    <string name="settings_server_text">Endereço de onde o aplicativo lê o catálogo e baixa os módulos dos jogos. Para baixar pela internet, use o endereço dos packs no GitHub (Releases).</string>
+    <string name="settings_server_field_label">Endereço do servidor</string>
+    <string name="settings_server_current">Em uso agora: %1$s</string>
+    <string name="settings_server_builtin">endereço embutido do instalador</string>
+    <string name="settings_server_save">Salvar</string>
+    <string name="settings_server_default">Usar padrão</string>
+    <string name="settings_storage_total">Espaço usado pelos módulos dos jogos: %1$s</string>
+    <string name="settings_storage_cleanup">Limpar arquivos temporários de download</string>
+    <string name="settings_storage_cleanup_note">Remove downloads incompletos e dados de verificação sem afetar os jogos instalados.</string>
+    <string name="settings_storage_cleanup_done">Limpeza concluída — %1$s liberados.</string>
+    <string name="settings_privacy_section">Privacidade e segurança</string>
+    <string name="settings_privacy_text_1">Nenhum dado pessoal é coletado ou enviado. O histórico de partidas e suas escolhas ficam apenas no aparelho.</string>
+    <string name="settings_privacy_text_2">Os downloads dos módulos são verificados por hash SHA-256 antes de ficarem disponíveis, e nenhum código executável é baixado da internet, em conformidade com as regras da Google Play. A conexão é usada apenas para baixar os packs que você escolher.</string>
+    <string name="settings_about_section">Sobre</string>
+    <string name="settings_about_version">Versão %1$s</string>
+    <string name="settings_about_catalog">Catálogo v%1$d • %2$d categorias • %3$d jogos listados</string>
+
+    <!-- Tela de partida -->
+    <string name="play_rules_title">Como jogar</string>
+    <string name="play_close">Fechar</string>
+    <string name="play_need_pack_title">Pacote não instalado</string>
+    <string name="play_need_pack_subtitle">Baixe o pacote deste jogo na página de detalhes antes de jogar: ele traz as regras e os dados do tabuleiro.</string>
+    <string name="play_module_unavailable_title">Partida indisponível</string>
+    <string name="play_module_unavailable_subtitle">Este jogo ainda não tem tela de partida nesta versão do app.</string>
+</resources>

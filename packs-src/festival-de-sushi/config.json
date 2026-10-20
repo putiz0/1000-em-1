@@ -1,0 +1,24 @@
+{
+  "rodadas": 3,
+  "cartasPorMao": 8,
+  "composicao": {
+    "niguiri": 3,
+    "rolinho": 3,
+    "temaki": 2,
+    "mochi": 2,
+    "wasabi": 2,
+    "gengibre": 1,
+    "cha": 2,
+    "pudim": 1
+  },
+  "pontosNiguiri": 2,
+  "pontosRolinho": 2,
+  "wasabiTransformaRolinho": 4,
+  "pontosGengibre": 3,
+  "chaPorCarta": 1,
+  "temakiMeta": 3,
+  "temakiPontos": 12,
+  "mochiParPontos": 5,
+  "pudimFimVitoria": 6,
+  "pudimFimEmpate": 3
+}
