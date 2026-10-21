@@ -97,4 +97,54 @@ class HttpPackDownloaderTest {
             assertContentEquals(content, partFile.readBytes())
         }
     }
+
+    @Test
+    fun `retomada segue o tamanho real do disco e nunca cria buraco de zeros`() = runBlocking {
+        val content = HttpTestServer.fakeBytes(400 * 1024)
+        val temp = tempDir()
+        HttpTestServer(content).use { server ->
+            val downloader = HttpPackDownloader(client)
+            val partFile = File(temp, "part.zip")
+
+            // cenário real do erro "pacote corrompido": o banco acha que já
+            // baixou mais bytes do que o disco tem (processo morto no meio da
+            // escrita, temporário apagado, etc.). Sem a correção, setLength
+            // estendia o arquivo com zeros e o hash final divergia.
+            val realOnDisk = content.size / 4
+            partFile.writeBytes(content.slice(IntRange(0, realOnDisk - 1)).toByteArray())
+            val offsetSalvoNoBanco = realOnDisk.toLong() + 15_000L
+
+            val result = downloader.downloadAppend(
+                url = server.url,
+                partFile = partFile,
+                startOffset = offsetSalvoNoBanco
+            ) { }
+
+            // o arquivo final tem que ser EXATAMENTE o conteúdo completo
+            assertEquals(content.size.toLong(), result.finalOffset)
+            assertTrue(!result.restartedFromZero)
+            assertContentEquals(content, partFile.readBytes())
+        }
+    }
+
+    @Test
+    fun `arquivo parcial apagado com offset salvo no banco recomeca do zero`() = runBlocking {
+        val content = HttpTestServer.fakeBytes(300 * 1024)
+        val temp = tempDir()
+        HttpTestServer(content).use { server ->
+            val downloader = HttpPackDownloader(client)
+            val partFile = File(temp, "part.zip") // deliberadamente NÃO criado
+            // (o caso "Limpar arquivos temporários" seguido de retomada)
+
+            val result = downloader.downloadAppend(
+                url = server.url,
+                partFile = partFile,
+                startOffset = 30_000L
+            ) { }
+
+            assertEquals(content.size.toLong(), result.finalOffset)
+            assertTrue(!result.restartedFromZero)
+            assertContentEquals(content, partFile.readBytes())
+        }
+    }
 }

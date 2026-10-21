@@ -6,24 +6,25 @@ Biblioteca de jogos offline para Android: o usuário baixa **somente os jogos qu
 
 ## APK compartilhável
 
-- **Arquivo:** `dist\PlayBox-Offline-v0.3.2.apk`
+- **Arquivo:** `dist\PlayBox-Offline-v0.3.3.apk`
 - **Tamanho:** ~1,79 MB (release com R8 + shrink de recursos)
-- **SHA‑256 do arquivo:** `8E96746AF9C4646B3BD60B857FAA1483421FA891D5AB26F46F2E2FBA91046835`
-- **versionCode 9 • versionName 0.3.2** (verificado com `aapt2 dump badging`)
+- **SHA‑256 do arquivo:** `416AC1A06187DE11D13C19D95B840CB4E4D661B3AD317CB597BE28DA8FDB853A`
+- **versionCode 10 • versionName 0.3.3** (verificado com `aapt2 dump badging`)
 - **Assinado** com o keystore local `C:\Users\mikay\playbox-dev\keys\playbox-release.jks` (verificado com `apksigner`; mesmo certificado SHA‑256 `c8cabe01…` de todas as versões anteriores, portanto instala por cima). Versões futuras **precisam** desse mesmo keystore.
 - **Instalação:** Android 7.0+ — toque no arquivo → autorize "Instalar apps desconhecidos" → instalar.
 - **Compartilhamento:** WhatsApp/Telegram/Drive/USB etc. Não requer Play Store nem conta.
 
 Novidades por versão:
-- **v0.3.2:** o endereço do servidor de packs virou **configuração** (Ajustes → "Servidor dos jogos") — dá para apontar os packs para o GitHub Releases e baixar pela internet do aparelho, **sem cabo USB**. Correção da v0.3.1 (servidor fora → estado "Falhou" em vez de fechar o app) continua inclusa.
+- **v0.3.3:** correção do erro **"pacote corrompido"** — a retomada de download agora usa o tamanho real do arquivo parcial em disco (e nunca estende o arquivo com zeros). Antes: se o processo morresse no meio da escrita, o usuário apagasse os temporários ou o offset ficasse defasado, o zip voltava com um buraco de zeros e falhava no SHA‑256. Correções anteriores (301–302) continuam inclusas.
+- **v0.3.2:** endereço do servidor de packs **configurável** (Ajustes → "Servidor dos jogos") — packs no GitHub Releases, download pela internet do aparelho, sem cabo USB.
 
-Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou").
+Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou", v0.3.2 servidor configurável, v0.3.3 correção da retomada).
 
 ### Testes executados (resumo real dos XMLs)
 
 | Suite | Testes | Resultado |
 |---|---|---|
-| `:core:downloads` — estados de download/pausa/retomada/verificação → 10 + downloader HTTP com `Range` → 3 + verificador SHA‑256 do pack → 6 | 19 | ✅ |
+| `:core:downloads` — estados de download/pausa/retomada/verificação → 10 + downloader HTTP com `Range` (retomada pelo arquivo real, sem buraco de zeros) → 5 + verificador SHA‑256 do pack → 6 | 21 | ✅ |
 | `:core:catalog` — parse do catálogo + busca/filtros | 8 | ✅ |
 | `:core:gameapi` — parse do RemoteCatalog (campos futuros tolerados) | 3 | ✅ |
 | `:games:damas` — motor completo → 10 + IA → 3 | 13 | ✅ |
@@ -32,7 +33,7 @@ Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 mo
 | `:games:imperio` — motor completo (rolagem/duplos/prisão, compra, aluguéis com grupo completo, construção até hotel, cartas originais com/sem puxar cadeia, falência com liquidação, IA com reservas) | 15 | ✅ |
 | `:games:sushi` — motor do draft (pares revelam e mãos trocam, fechamento de rodada, bônus de pudim no fim) + IA heurística | 11 | ✅ |
 
-**Total: 93 testes de unidade passando, 0 falhas/erros em 13 suítes** (fonte de verdade: XMLs em `*\build\test-results\testReleaseUnitTest\`). Build `assembleRelease` ✅ BUILD SUCCESSFUL; assinatura verificada ✅.
+**Total: 95 testes de unidade passando, 0 falhas/erros em 13 suítes** (fonte de verdade: XMLs em `*\build\test-results\testReleaseUnitTest\`). Build `assembleRelease` ✅ BUILD SUCCESSFUL; assinatura verificada ✅.
 
 Pendente intencional: teste de download/baixar-jogar em aparelho físico (precisa do celular com `adb reverse` para o modo dev, ou do Release no GitHub + endereço em Ajustes para o modo produção).
 
@@ -150,5 +151,5 @@ O **Android Studio** não é obrigatório para compilar; para rodar em emulador,
 
 1. ~~Fase 3 — motor de downloads~~ ✅ concluída (v0.2.0).
 2. ~~Fase 4 — os 5 jogos~~ ✅ concluída (v0.2.1 → v0.3.0: Damas, Xadrez, Dominó, Império Imobiliário, Festival de Sushi; `available: true` no catálogo e packs publicados).
-3. **Fase 5** — packs prontos para o GitHub Releases (o código do app lê o endereço dos Ajustes); falta: publicar o Release `packs-v1` (arrastar os 6 arquivos de `dist\packs-github\`), testar download/jogar no aparelho físico e os testes de qualidade/acessibilidade/modo avião.
+3. **Fase 5** — packs publicados no GitHub Releases (`packs-v1`, endereço configurável em Ajustes); falta: testar download/jogar no aparelho físico e os testes de qualidade/acessibilidade/modo avião.
 4. **Fase 6** — publicação (AAB, keystore definitivo, checklist Google Play).

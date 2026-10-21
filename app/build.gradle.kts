@@ -23,8 +23,8 @@ android {
         applicationId = "com.playbox.offline"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "0.3.2"
+        versionCode = 10
+        versionName = "0.3.3"
 
         // Servidor de packs. Durante o desenvolvimento é o servidor do PC
         // (via adb reverse: "adb reverse tcp:9080 tcp:9080" liga o localhost

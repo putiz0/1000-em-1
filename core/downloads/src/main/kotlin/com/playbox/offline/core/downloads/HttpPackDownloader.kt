@@ -21,6 +21,9 @@ import java.io.RandomAccessFile
  *  - 206 (partial)            => anexa a partir do offset;
  *  - 200 com Range pedido     => servidor não suporta Range: recomeça do zero;
  *  - 416 (offset inválido)    => recomeça do zero;
+ *  - a retomada usa o TAMANHO REAL do arquivo parcial (o disco manda, o
+ *    offset do banco é só indicador) e a escrita nunca estende o arquivo
+ *    (zero-pad criava zip corrompido após morte do processo/limpeza);
  *  - cancelamento externo ([cancelCurrent] ou cancel da corrotina) lança
  *    [CancellationException] rápido (pausa/retomada/limpeza responsáveis);
  *  - cada bloco baixado chama [onProgress] com o total absoluto de bytes;
@@ -51,7 +54,19 @@ class HttpPackDownloader(private val client: OkHttpClient) {
         startOffset: Long,
         onProgress: suspend (absoluteBytes: Long) -> Unit
     ): Result = withContext(Dispatchers.IO) {
-        var offset = startOffset
+        // FONTE DA VERDADE: o arquivo em disco, não o offset salvo no banco.
+        // O processo pode ter morrido com bytes não persistidos, o usuário pode
+        // ter apagado os temporários ("Limpar arquivos temporários") ou uma
+        // falha anterior pode ter deixado o arquivo curto. Retomar do offset
+        // do banco nesses cenários EXPANDIRIA o arquivo com zeros (buraco) e
+        // o zip viraria corrompido no verificador. Sempre retomamos do tamanho
+        // real do arquivo (0 quando ele não existe).
+        var offset = if (startOffset > 0) {
+            partFile.parentFile?.mkdirs()
+            if (partFile.exists()) partFile.length() else 0L
+        } else {
+            0L
+        }
         var restartedFromZero = false
 
         while (true) {
@@ -115,9 +130,12 @@ class HttpPackDownloader(private val client: OkHttpClient) {
         onProgress: suspend (absoluteBytes: Long) -> Unit
     ): Long {
         RandomAccessFile(partFile, "rw").use { raf ->
-            // o arquivo deve conter exatamente "offset" bytes antes de anexar
-            raf.setLength(offset)
-            raf.seek(offset)
+            // JAMAIS estenda o arquivo aqui: estender criava um buraco de zeros
+            // (quando o offset chega maior que o disco) e o zip viraria
+            // corrompido. Encurtar é sempre seguro — o Range reenvia os bytes.
+            val safeStart = minOf(offset, raf.length())
+            raf.setLength(safeStart)
+            raf.seek(safeStart)
             val buffer = ByteArray(64 * 1024)
             var written = 0L
             body.byteStream().use { input ->
@@ -126,10 +144,10 @@ class HttpPackDownloader(private val client: OkHttpClient) {
                     if (read <= 0) break
                     raf.write(buffer, 0, read)
                     written += read
-                    onProgress(offset + written)
+                    onProgress(safeStart + written)
                 }
             }
-            return offset + written
+            return safeStart + written
         }
     }
 }
