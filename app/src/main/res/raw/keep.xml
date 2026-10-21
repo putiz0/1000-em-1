@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Protege os áudios gerados por tools/make-audio.ps1 do resource shrinker:
+  eles são resolvidos por nome em tempo de execução (getIdentifier) e
+  portanto não aparecem como referências estáticas na análise do R8.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/music_damas,@raw/music_xadrez,@raw/music_domino,@raw/music_imperio,@raw/music_sushi,@raw/sfx_tap,@raw/sfx_move,@raw/sfx_capture,@raw/sfx_stone,@raw/sfx_dice,@raw/sfx_card,@raw/sfx_win,@raw/sfx_lose,@raw/sfx_coin,@raw/sfx_door" />

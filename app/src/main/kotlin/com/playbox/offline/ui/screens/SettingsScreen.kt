@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,6 +53,8 @@ import kotlinx.coroutines.launch
 data class SettingsUiState(
     val theme: ThemePreference = ThemePreference.SYSTEM,
     val packBaseUrl: String? = null,
+    val soundOn: Boolean = true,
+    val musicOn: Boolean = true,
     val occupiedBytes: Long = 0,
     val schemaVersion: Int = 0,
     val categoriesCount: Int = 0,
@@ -67,11 +70,14 @@ class SettingsViewModel(
     val state: StateFlow<SettingsUiState> = combine(
         catalogRepository.snapshot,
         settingsRepository.themeFlow,
-        container.packBaseUrlOverride
-    ) { snap, theme, packBaseUrl ->
+        container.packBaseUrlOverride,
+        settingsRepository.audioFlow
+    ) { snap, theme, packBaseUrl, audio ->
         SettingsUiState(
             theme = theme,
             packBaseUrl = packBaseUrl,
+            soundOn = audio.soundOn,
+            musicOn = audio.musicOn,
             occupiedBytes = snap.totalOccupiedBytes(),
             schemaVersion = snap.schemaVersion,
             categoriesCount = snap.categories.size,
@@ -90,6 +96,14 @@ class SettingsViewModel(
     /** Salva o endereço do servidor de packs; null volta ao padrão embutido. */
     fun setPackServerBase(url: String?) {
         container.setPackServerBase(url)
+    }
+
+    fun setSoundOn(value: Boolean) {
+        viewModelScope.launch { settingsRepository.setSoundOn(value) }
+    }
+
+    fun setMusicOn(value: Boolean) {
+        viewModelScope.launch { settingsRepository.setMusicOn(value) }
     }
 }
 
@@ -197,6 +211,40 @@ fun SettingsScreen() {
         }
         HorizontalDivider(Modifier.padding(horizontal = 16.dp))
 
+        // Som e música
+        SectionHeader(
+            title = stringResource(R.string.settings_audio_section),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Column(Modifier.padding(16.dp)) {
+            AudioSwitchRow(
+                label = stringResource(R.string.settings_audio_sound),
+                checked = state.soundOn,
+                onChange = {
+                    viewModel.setSoundOn(it)
+                    if (it) container.gameAudio.playSfx("tap")
+                }
+            )
+            AudioSwitchRow(
+                label = stringResource(R.string.settings_audio_music),
+                checked = state.musicOn,
+                onChange = {
+                    viewModel.setMusicOn(it)
+                    when {
+                        it -> container.gameAudio.startMusic("damas")
+                        else -> container.gameAudio.stopMusic()
+                    }
+                }
+            )
+            Text(
+                text = stringResource(R.string.settings_audio_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+        HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+
         // Armazenamento
         SectionHeader(
             title = stringResource(R.string.settings_storage_section),
@@ -295,5 +343,21 @@ fun SettingsScreen() {
             )
         }
         Spacer(Modifier.height(24.dp))
+    }
+}
+
+@Composable
+private fun AudioSwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.padding(vertical = 4.dp),
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.weight(1f)
+        )
+        Switch(checked = checked, onCheckedChange = onChange)
     }
 }

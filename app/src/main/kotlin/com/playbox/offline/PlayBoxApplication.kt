@@ -9,6 +9,8 @@ import com.playbox.offline.core.downloads.DownloadCoordinator
 import com.playbox.offline.core.downloads.HttpPackDownloader
 import com.playbox.offline.core.downloads.OkHttpRemoteCatalogSource
 import com.playbox.offline.core.packs.PackManager
+import com.playbox.offline.core.designsystem.audio.AudioPrefs
+import com.playbox.offline.core.designsystem.audio.GameAudio
 import com.playbox.offline.data.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +70,19 @@ class AppContainer(context: Context) {
 
     val settingsRepository = SettingsRepository(appContext)
 
+    /**
+     * Áudio dos jogos (Fase A): efeitos + trilhas originais em res/raw.
+     * As preferências globais de Ajustes alimentam [audioPrefs]; cada tela
+     * de jogo usa [gameAudio] na entrada (LaunchedEffect) e ao interagir.
+     */
+    val audioPrefs: MutableStateFlow<AudioPrefs> = MutableStateFlow(AudioPrefs())
+    val gameAudio = GameAudio(appContext, audioPrefs)
+
     init {
+        appScope.launch {
+            // espelha as preferências de áudio (Ajustes) para o runtime
+            settingsRepository.audioFlow.collect { audioPrefs.value = it }
+        }
         appScope.launch {
             // carrega o endereço do servidor salvo (se houver) ANTES da primeira
             // leitura do catálogo, para o refresh inicial usar o endereço certo

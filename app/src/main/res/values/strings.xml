@@ -105,6 +105,10 @@
     <string name="settings_server_builtin">endereço embutido do instalador</string>
     <string name="settings_server_save">Salvar</string>
     <string name="settings_server_default">Usar padrão</string>
+    <string name="settings_audio_section">Som e música</string>
+    <string name="settings_audio_sound">Efeitos sonoros</string>
+    <string name="settings_audio_music">Música de fundo</string>
+    <string name="settings_audio_note">As escolhas ficam guardadas no aparelho e cada partida também tem opções no menu antes de jogar. Trilhas e efeitos são originais deste aplicativo.</string>
     <string name="settings_storage_total">Espaço usado pelos módulos dos jogos: %1$s</string>
     <string name="settings_storage_cleanup">Limpar arquivos temporários de download</string>
     <string name="settings_storage_cleanup_note">Remove downloads incompletos e dados de verificação sem afetar os jogos instalados.</string>

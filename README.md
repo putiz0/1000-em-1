@@ -6,20 +6,21 @@ Biblioteca de jogos offline para Android: o usuário baixa **somente os jogos qu
 
 ## APK compartilhável
 
-- **Arquivo:** `dist\PlayBox-Offline-v0.3.4.apk`
-- **Tamanho:** ~1,79 MB (release com R8 + shrink de recursos)
-- **SHA‑256 do arquivo:** `6F6757955E2A8B5705EA9E05A6184EB443F88ACF84A6E9F1DCFCFDBEFA49DA9F`
-- **versionCode 11 • versionName 0.3.4** (verificado com `aapt2 dump badging`)
+- **Arquivo:** `dist\PlayBox-Offline-v0.4.0.apk`
+- **Tamanho:** 2,66 MB (release com R8 + shrink; inclui trilhas e efeitos de áudio em res/raw)
+- **SHA‑256 do arquivo:** `046609C5CF2E547C8DAFE2F0B37B575A8274DDD76BE4825F218C92058E20ED07`
+- **versionCode 12 • versionName 0.4.0** (verificado com `aapt2 dump badging`)
 - **Assinado** com o keystore local `C:\Users\mikay\playbox-dev\keys\playbox-release.jks` (verificado com `apksigner`; mesmo certificado SHA‑256 `c8cabe01…` de todas as versões anteriores, portanto instala por cima). Versões futuras **precisam** desse mesmo keystore.
 - **Instalação:** Android 7.0+ — toque no arquivo → autorize "Instalar apps desconhecidos" → instalar.
 - **Compartilhamento:** WhatsApp/Telegram/Drive/USB etc. Não requer Play Store nem conta.
 
 Novidades por versão:
-- **v0.3.4:** a causa real do erro **"manifest.json em formato inválido (pacote corrompido)"**: o `make-pack.ps1` gravava o `manifest.json` com marca BOM (EF BB BF), embutida nos zips do Release; o parser JSON do app rejeitava o caractere. Agora os leitores JSON do app (manifest, catálogo remoto, configs dos packs) toleram BOM, e o `make-pack.ps1` passou a gravar UTF‑8 sem BOM. **Não é preciso republicar o Release** — os zips do `packs-v1` são aceitos como estão.
+- **v0.4.0 (Fase A das melhorias dos jogos):** infra de **áudio + menus**: `GameAudio` no designsystem (`SoundPool` para efeitos, `MediaPlayer` em loop para trilhas), **15 WAVs 100% originais gerados por `tools\make-audio.ps1`** (5 trilhas chiptune + 10 efeitos; nenhum áudio de terceiros), seção **"Som e música"** nos Ajustes com prévia audível, lembrete persistente das opções por partida (`matchOptionsFlow`) e widget `LabeledChipRow` para os menus pré-jogo. Próximas fases: B = Damas+Xadrez, C = Dominó+Sushi, D = Império.
+- **v0.3.4:** tolerância a BOM — o `make-pack.ps1` gravava `manifest.json` com BOM (EF BB BF) nos zips e o parser rejeitava o caractere ("pacote corrompido"); leitores JSON do app removem o BOM e o `make-pack.ps1` agora grava UTF‑8 sem BOM. **Os zips do `packs-v1` continuam válidos sem republicar.**
 - **v0.3.3:** retomada usa o tamanho real do arquivo parcial em disco (nunca estende o arquivo com zeros).
 - **v0.3.2:** endereço do servidor de packs **configurável** (Ajustes → "Servidor dos jogos").
 
-Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou", v0.3.2 servidor configurável, v0.3.3 correção da retomada, v0.3.4 tolerância a BOM).
+Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou", v0.3.2 servidor configurável, v0.3.3 correção da retomada, v0.3.4 tolerância a BOM, v0.4.0 audio+menus).
 
 ### Testes executados (resumo real dos XMLs)
 
