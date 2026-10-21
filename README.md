@@ -6,25 +6,26 @@ Biblioteca de jogos offline para Android: o usuário baixa **somente os jogos qu
 
 ## APK compartilhável
 
-- **Arquivo:** `dist\PlayBox-Offline-v0.3.3.apk`
+- **Arquivo:** `dist\PlayBox-Offline-v0.3.4.apk`
 - **Tamanho:** ~1,79 MB (release com R8 + shrink de recursos)
-- **SHA‑256 do arquivo:** `416AC1A06187DE11D13C19D95B840CB4E4D661B3AD317CB597BE28DA8FDB853A`
-- **versionCode 10 • versionName 0.3.3** (verificado com `aapt2 dump badging`)
+- **SHA‑256 do arquivo:** `6F6757955E2A8B5705EA9E05A6184EB443F88ACF84A6E9F1DCFCFDBEFA49DA9F`
+- **versionCode 11 • versionName 0.3.4** (verificado com `aapt2 dump badging`)
 - **Assinado** com o keystore local `C:\Users\mikay\playbox-dev\keys\playbox-release.jks` (verificado com `apksigner`; mesmo certificado SHA‑256 `c8cabe01…` de todas as versões anteriores, portanto instala por cima). Versões futuras **precisam** desse mesmo keystore.
 - **Instalação:** Android 7.0+ — toque no arquivo → autorize "Instalar apps desconhecidos" → instalar.
 - **Compartilhamento:** WhatsApp/Telegram/Drive/USB etc. Não requer Play Store nem conta.
 
 Novidades por versão:
-- **v0.3.3:** correção do erro **"pacote corrompido"** — a retomada de download agora usa o tamanho real do arquivo parcial em disco (e nunca estende o arquivo com zeros). Antes: se o processo morresse no meio da escrita, o usuário apagasse os temporários ou o offset ficasse defasado, o zip voltava com um buraco de zeros e falhava no SHA‑256. Correções anteriores (301–302) continuam inclusas.
-- **v0.3.2:** endereço do servidor de packs **configurável** (Ajustes → "Servidor dos jogos") — packs no GitHub Releases, download pela internet do aparelho, sem cabo USB.
+- **v0.3.4:** a causa real do erro **"manifest.json em formato inválido (pacote corrompido)"**: o `make-pack.ps1` gravava o `manifest.json` com marca BOM (EF BB BF), embutida nos zips do Release; o parser JSON do app rejeitava o caractere. Agora os leitores JSON do app (manifest, catálogo remoto, configs dos packs) toleram BOM, e o `make-pack.ps1` passou a gravar UTF‑8 sem BOM. **Não é preciso republicar o Release** — os zips do `packs-v1` são aceitos como estão.
+- **v0.3.3:** retomada usa o tamanho real do arquivo parcial em disco (nunca estende o arquivo com zeros).
+- **v0.3.2:** endereço do servidor de packs **configurável** (Ajustes → "Servidor dos jogos").
 
-Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou", v0.3.2 servidor configurável, v0.3.3 correção da retomada).
+Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 motor de downloads, v0.2.1 Damas, v0.2.2 Xadrez, v0.2.3 Dominó, v0.2.4 Império Imobiliário, v0.3.0 Festival de Sushi, v0.3.1 correção do estado "Falhou", v0.3.2 servidor configurável, v0.3.3 correção da retomada, v0.3.4 tolerância a BOM).
 
 ### Testes executados (resumo real dos XMLs)
 
 | Suite | Testes | Resultado |
 |---|---|---|
-| `:core:downloads` — estados de download/pausa/retomada/verificação → 10 + downloader HTTP com `Range` (retomada pelo arquivo real, sem buraco de zeros) → 5 + verificador SHA‑256 do pack → 6 | 21 | ✅ |
+| `:core:downloads` — estados de download/pausa/retomada/verificação → 11 + downloader HTTP com `Range` (retomada pelo arquivo real, sem buraco de zeros) → 5 + verificador SHA‑256 do pack (manifest com e sem BOM) → 7 | 23 | ✅ |
 | `:core:catalog` — parse do catálogo + busca/filtros | 8 | ✅ |
 | `:core:gameapi` — parse do RemoteCatalog (campos futuros tolerados) | 3 | ✅ |
 | `:games:damas` — motor completo → 10 + IA → 3 | 13 | ✅ |
@@ -33,7 +34,7 @@ Os APKs anteriores ficam guardados em `dist\` (v0.1.0 shell+catálogo, v0.2.0 mo
 | `:games:imperio` — motor completo (rolagem/duplos/prisão, compra, aluguéis com grupo completo, construção até hotel, cartas originais com/sem puxar cadeia, falência com liquidação, IA com reservas) | 15 | ✅ |
 | `:games:sushi` — motor do draft (pares revelam e mãos trocam, fechamento de rodada, bônus de pudim no fim) + IA heurística | 11 | ✅ |
 
-**Total: 95 testes de unidade passando, 0 falhas/erros em 13 suítes** (fonte de verdade: XMLs em `*\build\test-results\testReleaseUnitTest\`). Build `assembleRelease` ✅ BUILD SUCCESSFUL; assinatura verificada ✅.
+**Total: 97 testes de unidade passando, 0 falhas/erros em 13 suítes** (fonte de verdade: XMLs em `*\build\test-results\testReleaseUnitTest\`). Build `assembleRelease` ✅ BUILD SUCCESSFUL; assinatura verificada ✅.
 
 Pendente intencional: teste de download/baixar-jogar em aparelho físico (precisa do celular com `adb reverse` para o modo dev, ou do Release no GitHub + endereço em Ajustes para o modo produção).
 

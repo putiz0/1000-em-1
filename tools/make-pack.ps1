@@ -64,7 +64,8 @@ if (Test-Path $staging) { Remove-Item $staging -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $staging | Out-Null
 
 $manifestJson = $manifest | ConvertTo-Json -Depth 6
-[System.IO.File]::WriteAllText((Join-Path $staging "manifest.json"), $manifestJson, [System.Text.Encoding]::UTF8)
+# UTF-8 SEM BOM (o parser JSON do app rejeita a marcação EF BB BF)
+[System.IO.File]::WriteAllText((Join-Path $staging "manifest.json"), $manifestJson, (New-Object System.Text.UTF8Encoding($false)))
 Copy-Item -Path (Join-Path $contentDir '*') -Destination $staging -Recurse -Force
 
 $zipName = "$GameId-$ContentVersion.zip"
@@ -99,7 +100,8 @@ if ($existing.Count -gt 0) {
     $catalog.packs = @($catalog.packs) + @($packEntry)
 }
 
-$catalog | ConvertTo-Json -Depth 6 | Set-Content -Path $catalogPath -Encoding UTF8
+# UTF-8 SEM BOM (o parser JSON do app rejeita a marcação EF BB BF)
+[System.IO.File]::WriteAllText($catalogPath, ($catalog | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding($false)))
 
 Write-Host ""
 Write-Host "Pack gerado com sucesso:"

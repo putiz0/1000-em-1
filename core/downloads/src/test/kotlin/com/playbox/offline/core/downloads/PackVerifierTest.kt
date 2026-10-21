@@ -30,7 +30,9 @@ class PackVerifierTest {
     private fun createZip(
         files: Map<String, ByteArray>,
         gameId: String = "damas",
-        contentVersion: Int = 1
+        contentVersion: Int = 1,
+        /** true = grava o manifest.json com BOM (marcação UTF-8 EF BB BF). */
+        manifestBom: Boolean = false
     ): File {
         val manifest = PackManifest(
             gameId = gameId,
@@ -38,6 +40,13 @@ class PackVerifierTest {
             files = files.map { (path, bytes) -> ManifestFile(path, bytes.size.toLong(), sha256(bytes)) }
         )
         val manifestBytes = Json.encodeToString(PackManifest.serializer(), manifest).encodeToByteArray()
+            .let { bytes ->
+                if (manifestBom) {
+                    byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()) + bytes
+                } else {
+                    bytes
+                }
+            }
 
         val zipFile = File(temp, "pack-${System.nanoTime()}.zip")
         ZipOutputStream(FileOutputStream(zipFile)).use { zip ->
@@ -57,6 +66,17 @@ class PackVerifierTest {
         "regras/damas.txt" to "Regras do jogo: captura obrigatória.\n".encodeToByteArray(),
         "tabuleiro/cores.json" to "{\"claro\":\"#F5E9D0\"}".encodeToByteArray()
     )
+
+    @Test
+    fun `manifest com BOM do make-pack e aceito`() {
+        // o make-pack do PowerShell 5.1 gravava UTF-8 com BOM (EF BB BF) no
+        // manifest.json; o parser JSON do Kotlin rejeita esse caractere — o
+        // leitor agora remove o BOM antes de interpretar
+        val zipFile = createZip(files, manifestBom = true)
+        val manifest = PackVerifier.unzipVerified(zipFile, temp, expectedGameId = "damas", expectedContentVersion = 1)
+        assertEquals("damas", manifest.gameId)
+        assertEquals(2, manifest.files.size)
+    }
 
     @Test
     fun `sha256 do arquivo confere com o calculado do conteudo`() {

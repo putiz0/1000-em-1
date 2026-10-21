@@ -78,7 +78,11 @@ object PackVerifier {
                 ?: throw PackIntegrityException("manifest.json ausente dentro do pacote.")
 
             val manifestText = try {
+                // o make-pack antigo gravava o manifest.json com BOM (UTF-8
+                // com marcação EF BB BF); o parser JSON do Kotlin rejeita
+                // esse caractere — tira-o antes de interpretar
                 zip.getInputStream(manifestEntry).bufferedReader(Charsets.UTF_8).readText()
+                    .trimStart('\uFEFF')
             } catch (e: Exception) {
                 throw PackIntegrityException("manifest.json não pôde ser lido (pacote corrompido).")
             }

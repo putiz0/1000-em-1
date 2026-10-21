@@ -63,7 +63,10 @@ class OkHttpRemoteCatalogSource(
     }
 
     /** Parse com validações (+ tradução de erros para mensagem entendível). */
-    private fun parseCatalog(text: String): RemoteCatalog {
+    private fun parseCatalog(text0: String): RemoteCatalog {
+        // tolera BOM (catálogos gravados por ferramentas do Windows levam
+        // a marcação EF BB BF; o parser JSON do Kotlin rejeita esse caractere)
+        val text = text0.trimStart('\uFEFF')
         val parsed: RemoteCatalog = try {
             json.decodeFromString<RemoteCatalog>(text)
         } catch (e: SerializationException) {

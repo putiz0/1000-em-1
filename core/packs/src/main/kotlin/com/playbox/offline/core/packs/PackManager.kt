@@ -46,14 +46,17 @@ class PackManager(baseDir: File) {
     /** Lê um arquivo de texto (UTF-8) do pacote mais recente instalado, ou null. */
     fun readTextFromLatestPack(gameId: String, fileName: String): String? =
         latestInstalledDir(gameId)?.let { dir ->
-            File(dir, fileName).takeIf { it.isFile }?.readText(Charsets.UTF_8)
+            File(dir, fileName).takeIf { it.isFile }
+                ?.readText(Charsets.UTF_8)
+                // tolera BOM no começo do arquivo (UTF-8 com marcação)
+                ?.trimStart('\uFEFF')
         }
 
     /** Lê e valida o manifest.json do pacote instalado. */
     fun readManifest(packDir: File): PackManifest {
         val file = File(packDir, MANIFEST_FILE)
         require(file.isFile) { "manifest.json ausente em ${packDir.path}" }
-        val manifest = json.decodeFromString<PackManifest>(file.readText(Charsets.UTF_8))
+        val manifest = json.decodeFromString<PackManifest>(file.readText(Charsets.UTF_8).trimStart('\uFEFF'))
         require(manifest.gameId == packDir.parentFile?.name) {
             "manifesto de \"${manifest.gameId}\" está na pasta de \"${packDir.parentFile?.name}\""
         }

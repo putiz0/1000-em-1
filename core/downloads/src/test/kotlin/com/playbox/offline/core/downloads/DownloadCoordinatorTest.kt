@@ -95,7 +95,13 @@ class DownloadCoordinatorTest {
     private fun sha256(bytes: ByteArray): String =
         java.security.MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
-    private suspend fun buildPack(baseDir: File, gameId: String, contentVersion: Int = 1): ByteArray {
+    private suspend fun buildPack(
+        baseDir: File,
+        gameId: String,
+        contentVersion: Int = 1,
+        /** true = simula o make-pack antigo do PowerShell (manifest.json com BOM). */
+        manifestBom: Boolean = false
+    ): ByteArray {
         // conteúdo do pack: um arquivo de regras + um json de dados
         val regras = "Regras do $gameId (versão $contentVersion) — texto de conteúdo íntegro.\n".encodeToByteArray()
         val dados = "{\"layout\":\"ok\"}".encodeToByteArray()
@@ -110,6 +116,14 @@ class DownloadCoordinatorTest {
         val manifestBytes = kotlinx.serialization.json.Json
             .encodeToString(com.playbox.offline.core.gameapi.PackManifest.serializer(), manifest)
             .encodeToByteArray()
+            .let { bytes ->
+                if (manifestBom) {
+                    // EF BB BF = marca BOM de UTF-8 (como gravava o make-pack do PS 5.1)
+                    byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()) + bytes
+                } else {
+                    bytes
+                }
+            }
 
         val buffer = java.io.ByteArrayOutputStream()
         java.util.zip.ZipOutputStream(buffer).use { zip ->
@@ -198,6 +212,27 @@ class DownloadCoordinatorTest {
             assertTrue(File(rig.packManager.packsRoot, "damas/1/manifest.json").isFile)
             // parciais eliminados depois da instalação
             assertTrue(!File(rig.packManager.tempRoot, "damas-1.zip").exists())
+        }
+    }
+
+    @Test
+    fun `pack do make-pack PowerShell com manifest BOM instala completo`() = runBlocking {
+        // caso real do celular do usuário: o make-pack antigo gerava
+        // manifest.json com BOM dentro do zip publicado no GitHub Releases;
+        // o hash do zip conferia, mas o parser rejeitava
+        // ("manifest.json em formato inválido (pacote corrompido)")
+        val packBytes = buildPack(tempDir(), "damas", manifestBom = true)
+        newRig(packBytes).use { rig ->
+            rig.coordinator.startOrResumeDownload("damas")
+            rig.coordinator.awaitIdle("damas")
+
+            val row = rig.dao.find("damas")
+            assertNotNull(row)
+            assertEquals(InstallStatus.COMPLETED, row.status)
+            assertEquals(1, row.installedVersion)
+            assertEquals(packBytes.size.toLong(), row.totalBytes)
+            assertEquals(null, row.lastError)
+            assertTrue(File(rig.packManager.packsRoot, "damas/1/regras.txt").isFile)
         }
     }
 
